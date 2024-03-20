@@ -17,10 +17,8 @@ func TestMainHandlerWhenStatusCodeOkAndBodyIsNotEmpty(t *testing.T) {
 	handler := http.HandlerFunc(mainHandle)
 	handler.ServeHTTP(responseRecorder, req)
 
-	body := responseRecorder.Body.String()
-
 	require.Equal(t, http.StatusOK, responseRecorder.Code)
-	assert.NotEmpty(t, body)
+	assert.NotEmpty(t, responseRecorder.Body.String())
 }
 
 func TestMainHandlerWhenCityNotSupport(t *testing.T) {
@@ -30,7 +28,7 @@ func TestMainHandlerWhenCityNotSupport(t *testing.T) {
 	handler := http.HandlerFunc(mainHandle)
 	handler.ServeHTTP(responseRecorder, req)
 
-	assert.Equal(t, responseRecorder.Code, http.StatusBadRequest, "wrong city value")
+	require.Equal(t, responseRecorder.Code, http.StatusBadRequest, "wrong city value")
 	assert.Equal(t, responseRecorder.Body.String(), "wrong city value")
 }
 
@@ -45,6 +43,6 @@ func TestMainHandlerWhenCountMoreThanTotal(t *testing.T) {
 	body := responseRecorder.Body.String()
 	list := strings.Split(body, ",")
 
+	require.Equal(t, http.StatusOK, responseRecorder.Code)
 	assert.Len(t, list, totalCount)
-
 }
